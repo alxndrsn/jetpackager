@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.frontlinesms.build.jet;
+package net.frontlinesms.build.jet.compile;
 
 import java.io.BufferedReader;
 import java.io.File;

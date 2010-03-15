@@ -1,4 +1,4 @@
-package net.frontlinesms.build.jet;
+package net.frontlinesms.build.jet.compile;
 
 import java.io.File;
 import java.io.IOException;
