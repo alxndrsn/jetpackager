@@ -1,0 +1,42 @@
+%%Excelsior JET v6.0 project file
+
+-jpiiproject=${jpn.path}
+
+-compilewithfixedheap-
+-gendll-
+-genstackalloc+
+-genstacktrace+
+-global-
+-gui+
+-ignoreclassduplication+
+-ignorememberabsence+
+-inline+
+-jetcpenablemanualsettings+
+-splashcloseonawtwindow-
+-splashcloseonclick+
+-splashgetfrommanifest-
+
+-classabsence=HANDLE
+-compilerheap=0
+-heaplimit=0
+-inlinelimit=100
+-inlinetolimit=1000
+-jetcplastpage:=PageCompile
+-jetrt=Desktop
+-jetvmprop=-Djet.jit.fast -Djet.gc.heaplimit:0 -Djet.stack.trace 
+-main=${java.mainClass}
+-outputdir=.
+-outputname=${outputName}
+-splash=${splashImage.path}
+-stacklimit=900000
+-versioninfocompanyname=${versionInfo.companyName}
+-versioninfofiledescription=${versionInfo.fileDescription}
+-versioninfolegalcopyright=Copyright \x00a9 ${versionInfo.copyright.year} ${versionInfo.copyright.owner}
+-versioninfoproductname=${versionInfo.productName}
+-versioninfoproductversion=1.6.0.8
+
++nolaunchpad
+!batch *jar ./cp
+!batch *jar ./lib
+
+!module ${icon.path}
