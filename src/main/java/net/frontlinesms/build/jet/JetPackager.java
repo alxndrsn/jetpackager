@@ -38,7 +38,7 @@ public class JetPackager {
 	/** The path to the package executable */
 	private String packageExecutable;
 	
-	private void doPackaging(JetPackage jetPackage) throws IOException {
+	private void doPackaging(JetPackageProfile jetPackage) throws IOException {
 		assert(configured) : "This packager is not configured yet.";
 		
 		// Load the template.prj file from the classpath into memory
@@ -69,11 +69,19 @@ public class JetPackager {
 		
 		// TODO Copy code to the classpath directory
 		
-		// TODO Execute the build
+		// Execute the build
 		Process buildProcess = Runtime.getRuntime().exec(getPackageCommand(), null, this.workingDirectory);
-		new InputStreamPrinterThread("[package|out] ", buildProcess.getErrorStream(), System.err).start();
-		new InputStreamPrinterThread("[package|err] ", buildProcess.getInputStream(), System.out).start();
+		
+		InputStreamPrinterThread errReader = new InputStreamPrinterThread("[package|err] ", buildProcess.getErrorStream(), System.err);
+		errReader.start();
+		
+		InputStreamPrinterThread stdoutReader = new InputStreamPrinterThread("[package|out] ", buildProcess.getInputStream(), System.out);
+		stdoutReader.start();
+		
 		try { int buildStatus = buildProcess.waitFor(); } catch (InterruptedException e) {}
+
+		errReader.pleaseStop();
+		stdoutReader.pleaseStop();
 	}
 	
 	private File getPrjFile() {
@@ -124,9 +132,8 @@ public class JetPackager {
 					String propertyValue = prop.getValue();
 					if(propertyValue == null) throw new IllegalStateException("Property not set: " + propertyKey);
 					String subKey = "${" + propertyKey + "}";
-					lines[i] = line.replace(subKey, propertyValue);
-					if(!lines[i].equals(line)) break;
-					System.out.println(line + " <- " + subKey + "->" + propertyValue + " --> " + lines[i]);
+					line = line.replace(subKey, propertyValue);
+					lines[i] = line;
 				}
 				assert(!lines[i].equals(line)) : "Failed to change line: " + line;
 			}
@@ -142,7 +149,7 @@ public class JetPackager {
 		System.out.println("Starting...");
 		
 		// configure the JetPackage
-		JetPackage jetPackage = JetPackage.loadFromFile(new File(profileRootDirectory, profileName + "/profile.properties"));
+		JetPackageProfile jetPackage = JetPackageProfile.loadFromDirectory(new File(profileRootDirectory, profileName));
 		JetPackager packager = new JetPackager();
 		packager.configure(packagerConfigFilePath);
 		packager.doPackaging(jetPackage);
@@ -164,7 +171,7 @@ public class JetPackager {
 	}
 }
 
-class JetPackage {
+class JetPackageProfile {
 //> PROPERTY SUBSTITUTION KEYS
 	private static final String PROP_JPN_PATH = "jpn.path";
 	private static final String PROP_OUTPUT_NAME = "outputName";
@@ -190,13 +197,16 @@ class JetPackage {
 	private List<String> classpathDirectories;
 	private List<String> classpathJars;
 	private String iconPath;
+	/** This is the directory that all paths in the package configuration are relative to. */
+	private File rootDirectory;
 	
-	public JetPackage(String jpnPath, String javaMainClass, String outputName,
+	private JetPackageProfile(File rootDirectory,
+			String jpnPath, String javaMainClass, String outputName,
 			String splashImagePath, String versionInfoCompanyName,
 			String versionInfoFileDescription, String versionInfoCopyrightYear,
 			String versionInfoCopyrightOwner, String versionInfoProductName) {
+		this.rootDirectory = rootDirectory;
 		this.jpnPath = jpnPath;
-		
 		// Java Main Class must have dots in package name replaced with forward slashes.
 		this.javaMainClass = javaMainClass.replace('.', '/');
 		this.outputName = outputName;
@@ -215,15 +225,31 @@ class JetPackage {
 		props.put(PROP_JPN_PATH, this.jpnPath); //					Path to the JPN file.  Is this the path to create at?  Or is the .jpn required at this point?
 		props.put(PROP_JAVA_MAIN_CLASS, this.javaMainClass); //				The main java class to run
 		props.put(PROP_OUTPUT_NAME, this.outputName); //					The file name of the built executable
-		props.put(PROP_SPLASH_IMAGE_PATH, this.splashImagePath); // 			The path to the splash image
+		props.put(PROP_SPLASH_IMAGE_PATH, getAbsolutePath(this.splashImagePath)); // 			The path to the splash image
 		props.put(PROP_VERSION_INFO_COMPANY_NAME, this.versionInfoCompanyName); //		Company name, as used in version info
 		props.put(PROP_VERSION_INFO_FILE_DESCRIPTION, this.versionInfoFileDescription); //	The name of the project, as used in version info
 		props.put(PROP_VERSION_INFO_COPYRIGHT_YEAR, this.versionInfoCopyrightYear); //	The year of the copyright, as used in version info
 		props.put(PROP_VERSION_INFO_COPYRIGHT_OWNER, this.versionInfoCopyrightOwner); // The owner of the copyright, as used in version info
 		props.put(PROP_VERSION_INFO_PRODUCT_NAME, this.versionInfoProductName); //		The product name, as used in version info
-		props.put(PROP_ICON_PATH, this.iconPath); // The path to the icon
+		props.put(PROP_ICON_PATH, getAbsolutePath(this.iconPath)); // The path to the icon
 		
 		return props;
+	}
+	
+	/**
+	 * If supplied path is relative, converts it to be relative to the directory
+	 * that this profile is configured from. 
+	 * @param path
+	 * @return
+	 */
+	private String getAbsolutePath(final String path) {
+		String absolutePath = new File(path).getAbsolutePath();
+		if(absolutePath.equals(path)) {
+			// The path is absolute, so keep it that way
+			return path;
+		} else {
+			return new File(this.rootDirectory, path).getAbsolutePath();
+		}
 	}
 	
 	public List<String> getModules() {
@@ -235,10 +261,10 @@ class JetPackage {
 		return modules;
 	}
 	
-	public static JetPackage loadFromFile(File propertiesFile) throws IOException {
-		Map<String, String> props = PropertyLoader.loadProperties(propertiesFile);
+	public static JetPackageProfile loadFromDirectory(File profileDirectory) throws IOException {
+		Map<String, String> props = PropertyLoader.loadProperties(new File(profileDirectory, "profile.properties"));
 		
-		JetPackage jetPackage = new JetPackage(
+		JetPackageProfile jetPackage = new JetPackageProfile(profileDirectory,
 				props.remove(PROP_JPN_PATH),
 				props.remove(PROP_JAVA_MAIN_CLASS),
 				props.remove(PROP_OUTPUT_NAME),
@@ -320,7 +346,19 @@ class InputStreamPrinterThread extends Thread {
 		this.reader = new BufferedReader(this.isr);
 		this.out = out;
 	}
+	
+	/**
+	 * Request the thread to terminate.
+	 */
+	public void pleaseStop() {
+		this.shouldStop = true;
+	}
 
+	/**
+	 * Keep reading from {@link #reader} and writing the result to {@link #out} until
+	 * {@link #reader} throws an {@link IOException} or {@link #shouldStop} is set to
+	 * <code>true</code>.
+	 */
 	public void run() {
 		while(!shouldStop) {
 			String line;
@@ -331,6 +369,8 @@ class InputStreamPrinterThread extends Thread {
 						line = outPrefix + line;
 					}
 					out.println(line);
+					
+					Thread.yield();
 				}
 			} catch (IOException ex) {
 				out.println("EXCEPTION: " + ex.getMessage());

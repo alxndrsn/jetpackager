@@ -35,11 +35,9 @@
 -versioninfofiledescription=${versionInfo.fileDescription}
 -versioninfolegalcopyright=Copyright \x00a9 ${versionInfo.copyright.year} ${versionInfo.copyright.owner}
 -versioninfoproductname=${versionInfo.productName}
--versioninfoproductversion=1.6.0.8
+-versioninfoproductversion=${versionInfo.number}
 
 +nolaunchpad
-% Need to work out whether this should be *jar or *.jar.  Very likely the latter.
 !batch *.jar ./cp
-!batch *jar ./lib
 
 !module ${icon.path}

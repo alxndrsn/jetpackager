@@ -13,10 +13,11 @@ java.mainClass				The main java class to run
 outputName					The file name of the built executable
 splashImage.path 			The path to the splash image
 versionInfo.companyName		Company name, as used in version info
-versionInfo.fileDescription	The name of the project, as used in version info
+versionInfo.fileDescription	The name of the project, as used in version info.  This is used for the Windows shortcut in the start menu.
 versionInfo.copyright.year	The year of the copyright, as used in version info
 versionInfo.copyright.owner The owner of the copyright, as used in version info
 versionInfo.productName		The product name, as used in version info
+versionInfo.number			The actual version number.  I think it's expected in single-digit W.X.Y.Z.  I've seen 1.6.08 truncated to 1.6.
 --------------------------------------------------
 To specify directories of JARs to use on the classpath:
 | !batch *jar ${directory}
