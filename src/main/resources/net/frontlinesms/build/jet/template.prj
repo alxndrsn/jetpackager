@@ -1,4 +1,6 @@
 %%Excelsior JET v6.0 project file
+% This file generated with FrontlineSMS's JetPackager java wrapper.
+% All lines starting with % are comments
 
 -jpiiproject=${jpn.path}
 
@@ -36,7 +38,8 @@
 -versioninfoproductversion=1.6.0.8
 
 +nolaunchpad
-!batch *jar ./cp
+% Need to work out whether this should be *jar or *.jar.  Very likely the latter.
+!batch *.jar ./cp
 !batch *jar ./lib
 
 !module ${icon.path}
