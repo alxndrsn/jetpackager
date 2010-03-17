@@ -16,6 +16,17 @@ Sections:
 [Infrastructure]
 [PackageInfo]
 --------------------------------------------------
+Substitution variables
+
+The following variables will be substituted into the template.jpn.
+They are specified as ${variableNameHere}
+
+packContent				<folder> and <file> content of the package
+resourcepath			<resourcepath> content of executable
+executableName			the name of the executable
+workingDirectory		the path of the working directory
+productDescription		description of the product used when making a Windows shortcut
+--------------------------------------------------
 [Session]
 This section contains details of the current session of JetPackII.  It doesn't look particularly useful except
 to allow you to re-open a .jpn in JetPackII and have your settings restored.
@@ -59,6 +70,13 @@ Files are detailed by:
   		!attributes ${not sure what this is...}
   >end //file
 
+There is also a <resourcePath> section which specifies all non-RT JARs to be compiled into the
+executable:
+  <resourcepath
+      !entry 3 "C:\dev\excelsior\jet6.0-pro\activation-1.1.jar" null
+      // ... more here
+      !entry 3 "C:\dev\excelsior\jet6.0-pro\xml-apis-1.0.b2.jar" null
+  >end //resourcepath
 
 [Package]
 This section contains details of the Java runtime that should be included in the package.
