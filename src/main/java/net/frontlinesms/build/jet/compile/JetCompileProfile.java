@@ -97,7 +97,7 @@ public class JetCompileProfile {
 	}
 	
 	public static JetCompileProfile loadFromDirectory(File profileDirectory) throws IOException {
-		Map<String, String> props = PropertyLoader.loadProperties(new File(profileDirectory, "profile.properties"));
+		Map<String, String> props = PropertyLoader.loadProperties(new File(profileDirectory, "compile.profile.properties"));
 		
 		JetCompileProfile jetPackage = new JetCompileProfile(profileDirectory,
 				props.remove(PROP_JPN_PATH),
