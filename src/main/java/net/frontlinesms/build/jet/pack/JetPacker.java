@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 
 import net.frontlinesms.build.jet.FileUtils;
-import net.frontlinesms.build.jet.JetProfile;
 import net.frontlinesms.build.jet.ProcessStreamPrinter;
+import net.frontlinesms.build.jet.compile.JetCompileProfile;
 
 /**
  * @author aga
@@ -29,7 +29,7 @@ public class JetPacker {
 		executeXPack();
 	}
 	
-	public void configure(JetProfile compileProfile) {
+	public void configure(JetCompileProfile compileProfile) {
 		assert(!configured) : "Can only configure once.";
 		configured = true;
 	}
