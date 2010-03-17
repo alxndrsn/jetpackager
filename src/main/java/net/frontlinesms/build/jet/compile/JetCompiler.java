@@ -3,19 +3,17 @@
  */
 package net.frontlinesms.build.jet.compile;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import net.frontlinesms.build.jet.FileUtils;
+import net.frontlinesms.build.jet.ProcessStreamPrinter;
 
 /**
  * Build a jet package from java.
@@ -26,9 +24,11 @@ public class JetCompiler {
 //> CONFIGURATION PROPERTY KEYS
 	private static final String CONF_PROP_WORKING_DIRECTORY = "workingDirectory";
 	private static final String CONF_PROP_PACKAGE_EXECUTABLE = "packager.path";
+	/** File encoding used for .prj files. */
+	private static final String PRJ_FILE_ENCODING = "UTF-8";
 	
 //> INSTANCE VARIABLES
-	/** Indicates whether this packager has been configured yet. */
+	/** Indicates whether this instance has been configured yet. */
 	private boolean configured;
 	/** The working directory for the packager */
 	private File workingDirectory;
@@ -39,7 +39,7 @@ public class JetCompiler {
 		assert(configured) : "This packager is not configured yet.";
 		
 		// Load the template.prj file from the classpath into memory
-		String[] dotPrj = readFileFromClasspath("template.prj");
+		String[] dotPrj = FileUtils.readFileFromClasspath("template.prj", PRJ_FILE_ENCODING);
 		
 		// TODO append !module command for jars to .prj
 		
@@ -47,41 +47,14 @@ public class JetCompiler {
 		subProperties(dotPrj, jetPackage.getSubstitutionProperties());
 		
 		// write .prj file to the temp working directory
-		FileOutputStream fos = null;
-		OutputStreamWriter osw = null;
-		BufferedWriter writer = null;
-		try {
-			fos = new FileOutputStream(getPrjFile());
-			osw = new OutputStreamWriter(fos, "UTF-8");
-			writer = new BufferedWriter(osw);
-			for(String line : dotPrj) {
-				writer.write(line);
-				writer.write('\n');
-			}
-		} finally {
-			if(writer != null) try { writer.close(); } catch(IOException ex) {}
-			if(osw != null) try { osw.close(); } catch(IOException ex) {}
-			if(fos != null) try { fos.close(); } catch(IOException ex) {}
-		}
+		FileUtils.writeFile(getPrjFile(), PRJ_FILE_ENCODING, dotPrj);
 		
 		// TODO Copy code to the classpath directory
 		
 		// Execute the build
-		Process buildProcess = Runtime.getRuntime().exec(getPackageCommand(), null, this.workingDirectory);
-		
-		InputStreamPrinterThread errReader = new InputStreamPrinterThread("[package|err] ", buildProcess.getErrorStream(), System.err);
-		errReader.start();
-		
-		InputStreamPrinterThread stdoutReader = new InputStreamPrinterThread("[package|out] ", buildProcess.getInputStream(), System.out);
-		stdoutReader.start();
-		
-		int buildStatus;
-		try { buildStatus = buildProcess.waitFor(); } catch (InterruptedException ex) {
-			throw new RuntimeException("Interrupted while waiting for build to finish.", ex);
-		}
-
-		errReader.pleaseStop();
-		stdoutReader.pleaseStop();
+		Process buildProcess = Runtime.getRuntime().exec(getCompileCommand(), null, this.workingDirectory);
+		ProcessStreamPrinter printer = ProcessStreamPrinter.createStandardPrinter("compile", buildProcess);
+		int buildStatus = printer.startBlocking();
 		
 		System.exit(buildStatus);
 	}
@@ -90,7 +63,7 @@ public class JetCompiler {
 		return new File(this.workingDirectory, "output.prj");
 	}
 	
-	private String getPackageCommand() {
+	private String getCompileCommand() {
 		String executable = "jc";
 		if(this.packageExecutable != null && this.packageExecutable.length() > 0) {
 			executable = this.packageExecutable + "/jc";
@@ -105,6 +78,8 @@ public class JetCompiler {
 	}
 	
 	private void configure(Map<String, String> props) throws FileNotFoundException {
+		assert(!this.configured) : "This should not be configured more than once.";
+		
 		String workingDirPropValue = props.get(CONF_PROP_WORKING_DIRECTORY);
 		assert(workingDirPropValue != null) : "No working directory specified in config file.  Should be specified with key: " + CONF_PROP_WORKING_DIRECTORY;
 		
@@ -157,18 +132,5 @@ public class JetCompiler {
 		packager.doPackaging(jetPackage);
 		
 		System.out.println("...completed.");
-	}
-	
-	private static final String[] readFileFromClasspath(String filename) throws IOException {
-		InputStream is = JetCompiler.class.getResourceAsStream(filename);
-		InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-		BufferedReader reader = new BufferedReader(isr);
-		
-		String line;
-		List<String> lines = new ArrayList<String>();
-		while((line = reader.readLine()) != null) {
-			lines.add(line);
-		}
-		return lines.toArray(new String[lines.size()]);
 	}
 }
