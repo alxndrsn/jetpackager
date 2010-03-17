@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.frontlinesms.build.jet.PropertyLoader;
+
 
 public class JetCompileProfile {
 //> PROPERTY SUBSTITUTION KEYS
@@ -96,10 +98,11 @@ public class JetCompileProfile {
 		return modules;
 	}
 	
+//> STATIC FACTORIES
 	public static JetCompileProfile loadFromDirectory(File profileDirectory) throws IOException {
 		Map<String, String> props = PropertyLoader.loadProperties(new File(profileDirectory, "compile.profile.properties"));
 		
-		JetCompileProfile jetPackage = new JetCompileProfile(profileDirectory,
+		JetCompileProfile compileProfile = new JetCompileProfile(profileDirectory,
 				props.remove(PROP_JPN_PATH),
 				props.remove(PROP_JAVA_MAIN_CLASS),
 				props.remove(PROP_OUTPUT_NAME),
@@ -111,11 +114,11 @@ public class JetCompileProfile {
 				props.remove(PROP_VERSION_INFO_PRODUCT_NAME));
 		
 		String iconPath = props.remove(PROP_ICON_PATH);
-		if(iconPath != null) jetPackage.iconPath = iconPath;
+		if(iconPath != null) compileProfile.iconPath = iconPath;
 		
 		// Check all properties used
 		assert(props.size() == 0) : "There are " + props.size() + " unused properties.";
 		
-		return jetPackage;
+		return compileProfile;
 	}
 }

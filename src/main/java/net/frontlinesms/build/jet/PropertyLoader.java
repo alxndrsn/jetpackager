@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.frontlinesms.build.jet.compile;
+package net.frontlinesms.build.jet;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,12 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author aga
- *
+ * @author Alex <alex@frontlinesms.com>
  */
-
-
-class PropertyLoader {
+public class PropertyLoader {
 	public static final Map<String, String> loadProperties(File file) throws IOException {
 		FileInputStream fis = null;
 		try {
