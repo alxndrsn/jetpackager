@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.frontlinesms.build.jet.PropertyLoader;
+import net.frontlinesms.build.jet.PropertyUtils;
 
 
 public class JetCompileProfile {
@@ -100,7 +100,7 @@ public class JetCompileProfile {
 	
 //> STATIC FACTORIES
 	public static JetCompileProfile loadFromDirectory(File profileDirectory) throws IOException {
-		Map<String, String> props = PropertyLoader.loadProperties(new File(profileDirectory, "compile.profile.properties"));
+		Map<String, String> props = PropertyUtils.loadProperties(new File(profileDirectory, "compile.profile.properties"));
 		
 		JetCompileProfile compileProfile = new JetCompileProfile(profileDirectory,
 				props.remove(PROP_JPN_PATH),

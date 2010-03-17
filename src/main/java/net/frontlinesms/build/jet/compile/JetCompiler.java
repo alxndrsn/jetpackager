@@ -7,11 +7,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.frontlinesms.build.jet.FileUtils;
 import net.frontlinesms.build.jet.ProcessStreamPrinter;
-import net.frontlinesms.build.jet.PropertyLoader;
+import net.frontlinesms.build.jet.PropertyUtils;
 
 /**
  * Compiles a jet package from java.
@@ -37,13 +36,13 @@ public class JetCompiler {
 		assert(configured) : "This packager is not configured yet.";
 		
 		// Load the template.prj file from the classpath into memory
-		String[] dotPrj = FileUtils.readFileFromClasspath("template.prj", PRJ_FILE_ENCODING);
+		String[] dotPrj = FileUtils.readFileFromClasspath(this.getClass(), "template.prj", PRJ_FILE_ENCODING);
 		
 		// TODO append !module command for jars to .prj  N.B. Recently I am not sure this is necessary as we are
 		// using !batch *.jar etc. to define java classes
 		
 		// Filter the properties in template.prj
-		subProperties(dotPrj, compileProfile.getSubstitutionProperties());
+		PropertyUtils.subProperties(dotPrj, compileProfile.getSubstitutionProperties());
 		
 		// write .prj file to the temp working directory
 		FileUtils.writeFile(getPrjFile(), PRJ_FILE_ENCODING, dotPrj);
@@ -75,7 +74,7 @@ public class JetCompiler {
 
 	/** Calls {@link #configure(Map)} with the contents of the supplied config file. */
 	private void configure(String confPath) throws IOException {
-		Map<String, String> props = PropertyLoader.loadProperties(new File(confPath));
+		Map<String, String> props = PropertyUtils.loadProperties(new File(confPath));
 		configure(props);
 	}
 	
@@ -94,33 +93,11 @@ public class JetCompiler {
 		}
 		
 		this.compileExecutable = props.get(CONF_PROP_COMPILE_EXECUTABLE);
-		assert(this.compileExecutable!=null) : "No package executable was specified.  Should be set with key: " + CONF_PROP_COMPILE_EXECUTABLE;
+		assert(this.compileExecutable!=null) : "No compile executable was specified.  Should be set with key: " + CONF_PROP_COMPILE_EXECUTABLE;
 		
 		this.configured = true;
 	}
 
-	/**
-	 * Substitutes properties in place.
-	 * @param lines Lines of file to sub properties into
-	 * @param props Property name/value map
-	 */
-	private static void subProperties(String[] lines, Map<String, String> props) {
-		for (int i = 0; i < lines.length; i++) {
-			String line = lines[i];
-			if(line.contains("${")) {
-				for(Entry<String, String> prop : props.entrySet()) {
-					String propertyKey = prop.getKey();
-					String propertyValue = prop.getValue();
-					if(propertyValue == null) throw new IllegalStateException("Property not set: " + propertyKey);
-					String subKey = "${" + propertyKey + "}";
-					line = line.replace(subKey, propertyValue);
-					lines[i] = line;
-				}
-				assert(!lines[i].equals(line)) : "Failed to change line: " + line;
-			}
-		}
-	}
-	
 	public static void main(String[] args) throws IOException {
 		assert(args.length > 2) : "Not enough args.";
 		String packagerConfigFilePath = args[0];

@@ -10,7 +10,7 @@ import java.util.Map;
 
 import net.frontlinesms.build.jet.FileUtils;
 import net.frontlinesms.build.jet.ProcessStreamPrinter;
-import net.frontlinesms.build.jet.PropertyLoader;
+import net.frontlinesms.build.jet.PropertyUtils;
 /**
  * Packs a jet package from java.
  * @author Alex Anderson <alex@frontlinesms.com>
@@ -31,13 +31,13 @@ public class JetPacker {
 	
 	public void doPack(JetPackProfile packProfile) throws IOException {
 		assert(this.configured) : "You cannot pack until the packer has been configured.";
-		generateJpnFile();
+		generateJpnFile(packProfile);
 		executeXPack();
 	}
 
 	/** Calls {@link #configure(Map)} with the contents of the supplied config file. */
 	private void configure(String confPath) throws IOException {
-		Map<String, String> props = PropertyLoader.loadProperties(new File(confPath));
+		Map<String, String> props = PropertyUtils.loadProperties(new File(confPath));
 		configure(props);
 	}
 
@@ -64,10 +64,14 @@ public class JetPacker {
 	
 //> INSTANCE HELPER METHODS
 	/** Generate the .jpn file which dictates the content of the package. 
+	 * @param packProfile 
 	 * @throws IOException */
-	private void generateJpnFile() throws IOException {
+	private void generateJpnFile(JetPackProfile packProfile) throws IOException {
 		// For now, we just copy an old jpn file from the temp directory.
-		String[] dotJpnLines = FileUtils.readFileFromClasspath("/temp/FrontlineSMS.jpn", JPN_FILE_ENCODING);
+		String[] dotJpnLines = FileUtils.readFileFromClasspath(this.getClass(), "template.jpn", JPN_FILE_ENCODING);
+		
+		PropertyUtils.subProperties(dotJpnLines, packProfile.getSubstitutionProperties());
+		
 		FileUtils.writeFile(getJpnFile(), JPN_FILE_ENCODING, dotJpnLines);
 		
 		// TODO we should actually generate a JPN which is relevant to the project!
