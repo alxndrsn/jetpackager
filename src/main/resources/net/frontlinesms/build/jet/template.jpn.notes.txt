@@ -21,11 +21,19 @@ Substitution variables
 The following variables will be substituted into the template.jpn.
 They are specified as ${variableNameHere}
 
-packContent				<folder> and <file> content of the package
-resourcepath			<resourcepath> content of executable
-executableName			the name of the executable
-workingDirectory		the path of the working directory
-productDescription		description of the product used when making a Windows shortcut
+packContent					<folder> and <file> content of the package
+packContent.lineFormat		packContent in a !format (see [PackageInfo] section)
+resourcepath				<resourcepath> content of executable
+classpath.commandline		Java classpath specified in the commandline-style, e.g. activation-1.1.jar;...;xml-apis-1.0.b2.jar
+executableName				the name of the executable
+workingDirectory			the path of the working directory
+productName					name of the product, as used in registry
+productVendor
+productVersion
+productVersion.standardised	This *possibly* only works in W.X.Y.Z format with single digits in each 
+productDescription			description of the product used when making a Windows shortcut
+startMenu.programFolderRoot	Name of the startmenu directory to add shortcuts to
+programFilesHome			The directory in "Program Files" to install to
 --------------------------------------------------
 [Session]
 This section contains details of the current session of JetPackII.  It doesn't look particularly useful except
@@ -92,6 +100,10 @@ This includes details of where to sintall shortcuts, what files to associate wit
 and post-install actions.
 
 [PackageInfo]
-This contains even more details of the package and the files which will be included in it.
+This contains even more details of the package and the files which will be included in it.  They are
+re-specified in the following form:
+	!directory "help"
+	!directory "help\img"
+	!file "help\img\contactmanager.jpg" "C:\dev\workspace-32bit\aga-frontline-dist\target\windows-jet-package\help\img\contactmanager.jpg"
 It also contains details of the compression algorithm to use.
 
