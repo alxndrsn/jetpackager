@@ -35,7 +35,7 @@ public class JetCompileProfile {
 	private final String versionInfoProductName;
 	private String iconPath;
 	/** This is the directory that all paths in the package configuration are relative to. */
-	private File rootDirectory;
+	private final File rootDirectory;
 	
 	private JetCompileProfile(File rootDirectory,
 			String jpnPath, String javaMainClass, String outputName,
