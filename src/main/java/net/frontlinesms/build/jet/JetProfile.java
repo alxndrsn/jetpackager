@@ -1,4 +1,4 @@
-package net.frontlinesms.build.jet.compile;
+package net.frontlinesms.build.jet;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JetCompileProfile {
+import net.frontlinesms.build.jet.compile.PropertyLoader;
+
+public class JetProfile {
 //> PROPERTY SUBSTITUTION KEYS
 	private static final String PROP_JPN_PATH = "jpn.path";
 	private static final String PROP_OUTPUT_NAME = "outputName";
@@ -34,7 +36,7 @@ public class JetCompileProfile {
 	/** This is the directory that all paths in the package configuration are relative to. */
 	private File rootDirectory;
 	
-	private JetCompileProfile(File rootDirectory,
+	private JetProfile(File rootDirectory,
 			String jpnPath, String javaMainClass, String outputName,
 			String splashImagePath, String versionInfoCompanyName,
 			String versionInfoFileDescription, String versionInfoCopyrightYear,
@@ -95,10 +97,10 @@ public class JetCompileProfile {
 		return modules;
 	}
 	
-	public static JetCompileProfile loadFromDirectory(File profileDirectory) throws IOException {
+	public static JetProfile loadFromDirectory(File profileDirectory) throws IOException {
 		Map<String, String> props = PropertyLoader.loadProperties(new File(profileDirectory, "profile.properties"));
 		
-		JetCompileProfile jetPackage = new JetCompileProfile(profileDirectory,
+		JetProfile jetPackage = new JetProfile(profileDirectory,
 				props.remove(PROP_JPN_PATH),
 				props.remove(PROP_JAVA_MAIN_CLASS),
 				props.remove(PROP_OUTPUT_NAME),

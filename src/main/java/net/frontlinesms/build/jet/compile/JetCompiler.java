@@ -3,16 +3,14 @@
  */
 package net.frontlinesms.build.jet.compile;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.frontlinesms.build.jet.FileUtils;
+import net.frontlinesms.build.jet.JetProfile;
 import net.frontlinesms.build.jet.ProcessStreamPrinter;
 
 /**
@@ -35,7 +33,7 @@ public class JetCompiler {
 	/** The path to the package executable */
 	private String packageExecutable;
 	
-	private void doPackaging(JetCompileProfile jetPackage) throws IOException {
+	private void doPackaging(JetProfile jetPackage) throws IOException {
 		assert(configured) : "This packager is not configured yet.";
 		
 		// Load the template.prj file from the classpath into memory
@@ -126,7 +124,7 @@ public class JetCompiler {
 		System.out.println("Starting...");
 		
 		// configure the JetPackage
-		JetCompileProfile jetPackage = JetCompileProfile.loadFromDirectory(new File(profileRootDirectory, profileName));
+		JetProfile jetPackage = JetProfile.loadFromDirectory(new File(profileRootDirectory, profileName));
 		JetCompiler packager = new JetCompiler();
 		packager.configure(packagerConfigFilePath);
 		packager.doPackaging(jetPackage);
