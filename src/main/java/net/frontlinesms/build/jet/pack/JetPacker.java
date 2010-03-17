@@ -6,15 +6,11 @@ package net.frontlinesms.build.jet.pack;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 import net.frontlinesms.build.jet.FileUtils;
 import net.frontlinesms.build.jet.ProcessStreamPrinter;
 import net.frontlinesms.build.jet.PropertyLoader;
-import net.frontlinesms.build.jet.compile.JetCompileProfile;
-import net.frontlinesms.build.jet.compile.JetCompiler;
-
 /**
  * Packs a jet package from java.
  * @author Alex Anderson <alex@frontlinesms.com>
@@ -46,8 +42,9 @@ public class JetPacker {
 	}
 
 	/** Configures the {@link JetPacker} itself.  This is basically environment
-	 * variables, working directory etc. */
-	public void configure(Map<String, String> props) {
+	 * variables, working directory etc. 
+	 * @throws FileNotFoundException */
+	public void configure(Map<String, String> props) throws FileNotFoundException {
 		assert(!configured) : "Can only configure once.";
 		
 		String workingDirPropValue = props.get(CONF_PROP_WORKING_DIRECTORY);
@@ -60,7 +57,7 @@ public class JetPacker {
 		}
 		
 		this.packExecutable = props.get(CONF_PROP_PACK_EXECUTABLE);
-		assert(this.packExecutable!=null) : "No package executable was specified.  Should be set with key: " + CONF_PROP_PACKAGE_EXECUTABLE;
+		assert(this.packExecutable!=null) : "No package executable was specified.  Should be set with key: " + CONF_PROP_PACK_EXECUTABLE;
 		
 		this.configured = true;
 	}

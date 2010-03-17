@@ -1,5 +1,5 @@
 Notes on .prj files and template.prj in particular
-Lines that should be added to a .prj file are specified starting with a pipe and a space.
+In this file, lines that should be added to a .prj file are specified starting with a pipe and a space.
 --------------------------------------------------
 Should have a USG (usage) file specified in .prj, e.g.:
 | !module ./XXX.usg
