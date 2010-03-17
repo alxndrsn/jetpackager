@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class JetCompileProfile {
+public class JetCompileProfile {
 //> PROPERTY SUBSTITUTION KEYS
 	private static final String PROP_JPN_PATH = "jpn.path";
 	private static final String PROP_OUTPUT_NAME = "outputName";
