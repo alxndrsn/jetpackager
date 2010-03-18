@@ -38,6 +38,6 @@
 -versioninfoproductversion=${versionInfo.number}
 
 +nolaunchpad
-!batch *.jar ./cp
+!batch *.jar ./classpath
 
 !module ${icon.path}
