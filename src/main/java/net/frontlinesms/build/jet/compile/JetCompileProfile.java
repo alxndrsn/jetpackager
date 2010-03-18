@@ -18,6 +18,7 @@ public class JetCompileProfile {
 	private static final String PROP_VERSION_INFO_COPYRIGHT_YEAR = "versionInfo.copyright.year";
 	private static final String PROP_VERSION_INFO_FILE_DESCRIPTION = "versionInfo.fileDescription";
 	private static final String PROP_VERSION_INFO_COMPANY_NAME = "versionInfo.companyName";
+	private static final String PROP_VERSION_INFO_NUMBER = "versionInfo.number";
 	private static final String PROP_ICON_PATH = "icon.path";
 	
 //> INSTANCE PROPERTIES
@@ -30,6 +31,7 @@ public class JetCompileProfile {
 	private final String versionInfoCopyrightYear;
 	private final String versionInfoCopyrightOwner;
 	private final String versionInfoProductName;
+	private final String versionInfoNumber;
 	private String iconPath;
 	/** This is the directory that all paths in the package configuration are relative to. */
 	private File rootDirectory;
@@ -38,7 +40,7 @@ public class JetCompileProfile {
 			String jpnPath, String javaMainClass, String outputName,
 			String splashImagePath, String versionInfoCompanyName,
 			String versionInfoFileDescription, String versionInfoCopyrightYear,
-			String versionInfoCopyrightOwner, String versionInfoProductName) {
+			String versionInfoCopyrightOwner, String versionInfoProductName, String versionInfoNumber) {
 		this.rootDirectory = rootDirectory;
 		this.jpnPath = jpnPath;
 		// Java Main Class must have dots in package name replaced with forward slashes.
@@ -50,6 +52,7 @@ public class JetCompileProfile {
 		this.versionInfoCopyrightYear = versionInfoCopyrightYear;
 		this.versionInfoCopyrightOwner = versionInfoCopyrightOwner;
 		this.versionInfoProductName = versionInfoProductName;
+		this.versionInfoNumber = versionInfoNumber;
 	}
 
 	/** Get the properties to substitute into template.prj */
@@ -65,6 +68,7 @@ public class JetCompileProfile {
 		props.put(PROP_VERSION_INFO_COPYRIGHT_YEAR, this.versionInfoCopyrightYear); //	The year of the copyright, as used in version info
 		props.put(PROP_VERSION_INFO_COPYRIGHT_OWNER, this.versionInfoCopyrightOwner); // The owner of the copyright, as used in version info
 		props.put(PROP_VERSION_INFO_PRODUCT_NAME, this.versionInfoProductName); //		The product name, as used in version info
+		props.put(PROP_VERSION_INFO_NUMBER, this.versionInfoNumber); //		The version number, as used in version info
 		props.put(PROP_ICON_PATH, getAbsolutePath(this.iconPath)); // The path to the icon
 		
 		return props;
@@ -107,7 +111,8 @@ public class JetCompileProfile {
 				props.remove(PROP_VERSION_INFO_FILE_DESCRIPTION),
 				props.remove(PROP_VERSION_INFO_COPYRIGHT_YEAR),
 				props.remove(PROP_VERSION_INFO_COPYRIGHT_OWNER),
-				props.remove(PROP_VERSION_INFO_PRODUCT_NAME));
+				props.remove(PROP_VERSION_INFO_PRODUCT_NAME),
+				props.remove(PROP_VERSION_INFO_NUMBER));
 		
 		String iconPath = props.remove(PROP_ICON_PATH);
 		if(iconPath != null) jetPackage.iconPath = iconPath;
