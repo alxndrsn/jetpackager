@@ -62,16 +62,16 @@ public class JetCompileProfile {
 	public Map<String, String> getSubstitutionProperties() {
 		HashMap<String, String> props = new HashMap<String, String>();
 		
-		props.put(PROP_JPN_PATH, this.jpnPath); //					Path to the JPN file.  Is this the path to create at?  Or is the .jpn required at this point?
-		props.put(PROP_JAVA_MAIN_CLASS, this.javaMainClass); //				The main java class to run
-		props.put(PROP_OUTPUT_NAME, this.outputName); //					The file name of the built executable
-		props.put(PROP_SPLASH_IMAGE_PATH, getAbsolutePath(this.splashImagePath)); // 			The path to the splash image
-		props.put(PROP_VERSION_INFO_COMPANY_NAME, this.versionInfoCompanyName); //		Company name, as used in version info
-		props.put(PROP_VERSION_INFO_FILE_DESCRIPTION, this.versionInfoFileDescription); //	The name of the project, as used in version info
-		props.put(PROP_VERSION_INFO_COPYRIGHT_YEAR, this.versionInfoCopyrightYear); //	The year of the copyright, as used in version info
+		props.put(PROP_JPN_PATH, this.jpnPath); // Path to the JPN file.  Is this the path to create at?  Or is the .jpn required at this point?
+		props.put(PROP_JAVA_MAIN_CLASS, this.javaMainClass); // The main java class to run
+		props.put(PROP_OUTPUT_NAME, this.outputName); // The file name of the built executable
+		props.put(PROP_SPLASH_IMAGE_PATH, getAbsolutePath(this.splashImagePath)); // The path to the splash image
+		props.put(PROP_VERSION_INFO_COMPANY_NAME, this.versionInfoCompanyName); // Company name, as used in version info
+		props.put(PROP_VERSION_INFO_FILE_DESCRIPTION, this.versionInfoFileDescription); // The name of the project, as used in version info
+		props.put(PROP_VERSION_INFO_COPYRIGHT_YEAR, this.versionInfoCopyrightYear); // The year of the copyright, as used in version info
 		props.put(PROP_VERSION_INFO_COPYRIGHT_OWNER, this.versionInfoCopyrightOwner); // The owner of the copyright, as used in version info
-		props.put(PROP_VERSION_INFO_PRODUCT_NAME, this.versionInfoProductName); //		The product name, as used in version info
-		props.put(PROP_VERSION_INFO_NUMBER, this.versionInfoNumber); //		The version number, as used in version info
+		props.put(PROP_VERSION_INFO_PRODUCT_NAME, this.versionInfoProductName); // The product name, as used in version info
+		props.put(PROP_VERSION_INFO_NUMBER, this.versionInfoNumber); // The version number, as used in version info
 		props.put(PROP_ICON_PATH, getAbsolutePath(this.iconPath)); // The path to the icon
 		
 		return props;

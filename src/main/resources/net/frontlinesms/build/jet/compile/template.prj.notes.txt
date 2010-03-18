@@ -18,6 +18,7 @@ versionInfo.copyright.year	The year of the copyright, as used in version info
 versionInfo.copyright.owner The owner of the copyright, as used in version info
 versionInfo.productName		The product name, as used in version info
 versionInfo.number			The actual version number.  I think it's expected in single-digit W.X.Y.Z.  I've seen 1.6.08 truncated to 1.6.
+							Entering a bad version number will lead to the compile failing to produce any output.
 --------------------------------------------------
 To specify directories of JARs to use on the classpath:
 | !batch *jar ${directory}
