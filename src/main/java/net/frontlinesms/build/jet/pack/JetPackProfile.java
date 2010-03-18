@@ -79,9 +79,9 @@ public class JetPackProfile {
 				String programFilesHome) {
 		this.workingDirectory = workingDirectory;
 		assert(this.workingDirectory.exists()) : "The working directory does not exist: " + this.workingDirectory.getAbsolutePath();
-		this.jarDirectory = new File(workingDirectory, "packClasspath");
+		this.jarDirectory = new File(workingDirectory, "classpath");
 		assert(this.jarDirectory.exists()) : "The classpath directory does not exist: " + this.jarDirectory.getAbsolutePath();
-		this.packContentDirectory = new File(workingDirectory, "packContent");
+		this.packContentDirectory = new File(workingDirectory, "packageContent");
 		assert(this.packContentDirectory.exists()) : "The pack content directory does not exist: " + this.packContentDirectory.getAbsolutePath();
 		
 		this.productName = productName;
@@ -190,10 +190,10 @@ public class JetPackProfile {
 
 //> STATIC FACTORIES
 	/** @return a new {@link JetPackProfile} configured from the supplied directory */
-	public static JetPackProfile loadFromDirectory(File profileDirectory) throws IOException {
-		Map<String, String> props = PropertyUtils.loadProperties(new File(profileDirectory, "pack.profile.properties"));
+	public static JetPackProfile loadFromDirectory(File profile, File workingDirectory) throws IOException {
+		Map<String, String> props = PropertyUtils.loadProperties(profile);
 		
-		JetPackProfile packProfile = new JetPackProfile(profileDirectory,
+		JetPackProfile packProfile = new JetPackProfile(workingDirectory,
 				props.remove(PROP_PRODUCT_NAME),
 				props.remove(PROP_PRODUCT_VERSION),
 				props.remove(PROP_PRODUCT_VERSION_STANDARDISED),

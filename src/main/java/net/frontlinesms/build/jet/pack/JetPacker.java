@@ -17,7 +17,6 @@ import net.frontlinesms.build.jet.PropertyUtils;
  */
 public class JetPacker {
 	private static final String CONF_PROP_PACK_EXECUTABLE = "packer.path";
-	private static final String CONF_PROP_WORKING_DIRECTORY = "workingDirectory";
 	/** File encoding used for reading and writing .jpn files. */
 	private static final String JPN_FILE_ENCODING = "UTF-16LE";
 	
@@ -25,10 +24,16 @@ public class JetPacker {
 	/** Indicates whether this instance has been configured yet. */
 	private boolean configured;
 	/** The working directory for the packager */
-	private File workingDirectory;
+	private final File workingDirectory;
 	/** The path to the pack executable */
 	private String packExecutable;
 	
+//> CONSTRUCTORS
+	private JetPacker(File workingDirectory) {
+		this.workingDirectory = workingDirectory;
+	}
+	
+//> INSTANCE METHODS
 	public void doPack(JetPackProfile packProfile) throws IOException {
 		assert(this.configured) : "You cannot pack until the packer has been configured.";
 		generateJpnFile(packProfile);
@@ -46,15 +51,6 @@ public class JetPacker {
 	 * @throws FileNotFoundException */
 	public void configure(Map<String, String> props) throws FileNotFoundException {
 		assert(!configured) : "Can only configure once.";
-		
-		String workingDirPropValue = props.get(CONF_PROP_WORKING_DIRECTORY);
-		assert(workingDirPropValue != null) : "No working directory specified in config file.  Should be specified with key: " + CONF_PROP_WORKING_DIRECTORY;
-		
-		// Get the working directory as an absolute location
-		this.workingDirectory = new File(workingDirPropValue).getAbsoluteFile();
-		if(!workingDirectory.exists()) {
-			if(!workingDirectory.mkdirs()) throw new FileNotFoundException("Working directory could not be created at " + workingDirectory.getAbsolutePath()); 
-		}
 		
 		this.packExecutable = props.get(CONF_PROP_PACK_EXECUTABLE);
 		assert(this.packExecutable!=null) : "No package executable was specified.  Should be set with key: " + CONF_PROP_PACK_EXECUTABLE;
@@ -101,14 +97,20 @@ public class JetPacker {
 //> STATIC HELPER METHODS
 	public static void main(String[] args) throws IOException {
 		assert(args.length > 2) : "Not enough args.";
-		String packagerConfigFilePath = args[0];
-		File profileRootDirectory = new File(args[1]); 
-		String profileName = args[2];
+		String workingDirectoryRoot = args[0];
+		// Get the working directory as an absolute location
+		File workingDirectory = new File(workingDirectoryRoot).getAbsoluteFile();
+		if(!workingDirectory.exists()) {
+			if(!workingDirectory.mkdirs()) throw new FileNotFoundException("Working directory could not be created at " + workingDirectory.getAbsolutePath()); 
+		}
+		
+		String packagerConfigFilePath = args[1];
+		File profileDirectory = new File(args[2]); 
 		
 		System.out.println("Starting...");
 		
-		JetPackProfile packProfile = JetPackProfile.loadFromDirectory(new File(profileRootDirectory, profileName));
-		JetPacker packer = new JetPacker();
+		JetPackProfile packProfile = JetPackProfile.loadFromDirectory(new File(profileDirectory, "pack.profile.properties"), workingDirectory);
+		JetPacker packer = new JetPacker(workingDirectory);
 		packer.configure(packagerConfigFilePath);
 		packer.doPack(packProfile);
 

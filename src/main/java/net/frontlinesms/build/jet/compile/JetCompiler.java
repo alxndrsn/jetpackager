@@ -33,7 +33,6 @@ public class JetCompiler {
 	
 //> CONSTRUCTORS
 	private JetCompiler(File workingDirectory) {
-		// Get the working directory as an absolute location
 		this.workingDirectory = workingDirectory;
 	}
 	
