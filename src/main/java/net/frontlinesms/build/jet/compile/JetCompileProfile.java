@@ -37,14 +37,14 @@ public class JetCompileProfile {
 	private final String versionInfoNumber;
 	private String iconPath;
 	/** This is the directory that all paths in the package configuration are relative to. */
-	private final File rootDirectory;
+	private final File compileRootDirectory;
 	
 	private JetCompileProfile(File rootDirectory,
 			String jpnPath, String javaMainClass, String outputName,
 			String splashImagePath, String versionInfoCompanyName,
 			String versionInfoFileDescription, String versionInfoCopyrightYear,
 			String versionInfoCopyrightOwner, String versionInfoProductName, String versionInfoNumber) {
-		this.rootDirectory = rootDirectory;
+		this.compileRootDirectory = rootDirectory;
 		this.jpnPath = jpnPath;
 		// Java Main Class must have dots in package name replaced with forward slashes.
 		this.javaMainClass = javaMainClass.replace('.', '/');
@@ -65,14 +65,14 @@ public class JetCompileProfile {
 		props.put(PROP_JPN_PATH, this.jpnPath); // Path to the JPN file.  Is this the path to create at?  Or is the .jpn required at this point?
 		props.put(PROP_JAVA_MAIN_CLASS, this.javaMainClass); // The main java class to run
 		props.put(PROP_OUTPUT_NAME, this.outputName); // The file name of the built executable
-		props.put(PROP_SPLASH_IMAGE_PATH, getAbsolutePath(this.splashImagePath)); // The path to the splash image
+		props.put(PROP_SPLASH_IMAGE_PATH, getResourcePath(this.splashImagePath)); // The path to the splash image
 		props.put(PROP_VERSION_INFO_COMPANY_NAME, this.versionInfoCompanyName); // Company name, as used in version info
 		props.put(PROP_VERSION_INFO_FILE_DESCRIPTION, this.versionInfoFileDescription); // The name of the project, as used in version info
 		props.put(PROP_VERSION_INFO_COPYRIGHT_YEAR, this.versionInfoCopyrightYear); // The year of the copyright, as used in version info
 		props.put(PROP_VERSION_INFO_COPYRIGHT_OWNER, this.versionInfoCopyrightOwner); // The owner of the copyright, as used in version info
 		props.put(PROP_VERSION_INFO_PRODUCT_NAME, this.versionInfoProductName); // The product name, as used in version info
 		props.put(PROP_VERSION_INFO_NUMBER, this.versionInfoNumber); // The version number, as used in version info
-		props.put(PROP_ICON_PATH, getAbsolutePath(this.iconPath)); // The path to the icon
+		props.put(PROP_ICON_PATH, getResourcePath(this.iconPath)); // The path to the icon
 		
 		return props;
 	}
@@ -83,13 +83,13 @@ public class JetCompileProfile {
 	 * @param path
 	 * @return
 	 */
-	private String getAbsolutePath(final String path) {
+	private String getResourcePath(final String path) {
 		String absolutePath = new File(path).getAbsolutePath();
 		if(absolutePath.equals(path)) {
 			// The path is absolute, so keep it that way
 			return path;
 		} else {
-			return new File(this.rootDirectory, path).getAbsolutePath();
+			return new File(new File(this.compileRootDirectory, "resources"), path).getAbsolutePath();
 		}
 	}
 	
@@ -103,10 +103,10 @@ public class JetCompileProfile {
 	}
 	
 //> STATIC FACTORIES
-	public static JetCompileProfile loadFromDirectory(File profileDirectory) throws IOException {
+	public static JetCompileProfile loadFromDirectory(File profileDirectory, File workingDirectory) throws IOException {
 		Map<String, String> props = PropertyUtils.loadProperties(new File(profileDirectory, "compile.profile.properties"));
 		
-		JetCompileProfile compileProfile = new JetCompileProfile(profileDirectory,
+		JetCompileProfile compileProfile = new JetCompileProfile(new File(workingDirectory, "pack"),
 				props.remove(PROP_JPN_PATH),
 				props.remove(PROP_JAVA_MAIN_CLASS),
 				props.remove(PROP_OUTPUT_NAME),
