@@ -1,0 +1,109 @@
+Notes on .jpn files, and template.jpn in particular.
+--------------------------------------------------
+ENCODING: .jpn files are encoded with UTF-16LE
+--------------------------------------------------
+.jpn files consist of a number of named sections, each started by the section name in square brackets.
+A section is terminated by the beginning of the next section.  The sections contain two kinds of entries,
+one an XML-like structure, the other, lines beginning with !.
+
+Sections:
+
+[Session]
+[ProfileVersions]
+[DeploymentSet]
+[Package]
+[Session2]
+[Infrastructure]
+[PackageInfo]
+--------------------------------------------------
+Substitution variables
+
+The following variables will be substituted into the template.jpn.
+They are specified as ${variableNameHere}
+
+packContent					<folder> and <file> content of the package
+packContent.lineFormat		packContent in a !format (see [PackageInfo] section)
+resourcepath				<resourcepath> content of executable
+classpath.commandline		Java classpath specified in the commandline-style, e.g. activation-1.1.jar;...;xml-apis-1.0.b2.jar
+executableName				the name of the executable
+workingDirectory			the path of the working directory
+productName					name of the product, as used in registry
+productVendor
+productVersion
+productVersion.standardised	This *possibly* only works in W.X.Y.Z format with single digits in each 
+productDescription			description of the product used when making a Windows shortcut
+startMenu.programFolderRoot	Name of the startmenu directory to add shortcuts to
+programFilesHome			The directory in "Program Files" to install to
+--------------------------------------------------
+[Session]
+This section contains details of the current session of JetPackII.  It doesn't look particularly useful except
+to allow you to re-open a .jpn in JetPackII and have your settings restored.
+
+Sample:
+!jetversion "6.00"
+!root "C:\dev\workspace-32bit\JetPackager\temp\pack"
+!lastPage 8
+!keepArchive true
+!trialrunFolder ".\FrontlineSMS_trial_run"
+!skipTrialRun false
+!alwaysClearTrialRunDir false
+
+
+[ProfileVersions]
+This seems to detail the environment that jet should use.
+
+Sample:
+<jetProfile "v1"
+    !binCompStr "1.6.0_03"
+    !profile "1.6.0_03"
+    !jetVersion 6 0 4 ""
+>end //jetProfile
+
+
+[DeploymentSet]
+This contains a list of all files that will be present in the final installer package.
+Everything is contained within the <root> section:
+<folder "$(Root)" 0 0 4
+>end //folder
+
+Foders are detailed:
+  <folder "${name}" ${permissions}
+  >end //folder
+  
+Files are detailed by:
+  <file 
+  		!basic_info "${name}" "${localPath}"
+  		!flags ${permissions}
+  		!cachedLastModified ${dateLastModified [javaTimestamp] L}
+  		!attributes ${not sure what this is...}
+  >end //file
+
+There is also a <resourcePath> section which specifies all non-RT JARs to be compiled into the
+executable:
+  <resourcepath
+      !entry 3 "C:\dev\excelsior\jet6.0-pro\activation-1.1.jar" null
+      // ... more here
+      !entry 3 "C:\dev\excelsior\jet6.0-pro\xml-apis-1.0.b2.jar" null
+  >end //resourcepath
+
+[Package]
+This section contains details of the Java runtime that should be included in the package.
+It also contains details of where the project should be installed to, the name of the start
+menu group to put shortcuts in etc. 
+
+[Session2]
+This contains details of the trial run and which native libraries were loaded.  There's a good
+chance that these settings affect optimization and the libraries that are included in the package.
+
+[Infrastructure]
+This includes details of where to sintall shortcuts, what files to associate with the program,
+and post-install actions.
+
+[PackageInfo]
+This contains even more details of the package and the files which will be included in it.  They are
+re-specified in the following form:
+	!directory "help"
+	!directory "help\img"
+	!file "help\img\contactmanager.jpg" "C:\dev\workspace-32bit\aga-frontline-dist\target\windows-jet-package\help\img\contactmanager.jpg"
+It also contains details of the compression algorithm to use.
+

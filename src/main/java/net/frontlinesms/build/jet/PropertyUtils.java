@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.frontlinesms.build.jet.compile;
+package net.frontlinesms.build.jet;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,19 +11,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * @author aga
- *
+ * @author Alex <alex@frontlinesms.com>
  */
-
-
-class PropertyLoader {
+public class PropertyUtils {
 	public static final Map<String, String> loadProperties(File file) throws IOException {
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(file);
-			Map<String, String> props = PropertyLoader.loadProperties(fis);
+			Map<String, String> props = PropertyUtils.loadProperties(fis);
 			return props;
 		} finally {
 			if(fis != null) try { fis.close(); } catch(IOException ex) {}
@@ -55,6 +53,29 @@ class PropertyLoader {
 		} finally {
 			if(isr != null) try { isr.close(); } catch(IOException ex) {}
 			if(reader != null) try { reader.close(); } catch(IOException ex) {}
+		}
+	}
+
+	/**
+	 * Substitutes properties in place.
+	 * @param lines Lines of file to sub properties into
+	 * @param props Property name/value map
+	 */
+	public static void subProperties(String[] lines, Map<String, String> props) {
+		for (int i = 0; i < lines.length; i++) {
+			String line = lines[i];
+			if(line.contains("${")) {
+				String originalLine = line;
+				for(Entry<String, String> prop : props.entrySet()) {
+					String propertyKey = prop.getKey();
+					String propertyValue = prop.getValue();
+					if(propertyValue == null) throw new IllegalStateException("Property not set: " + propertyKey);
+					String subKey = "${" + propertyKey + "}";
+					line = line.replace(subKey, propertyValue);
+					lines[i] = line;
+				}
+				assert(!lines[i].equals(originalLine)) : "Failed to change line: " + line;
+			}
 		}
 	}
 }
