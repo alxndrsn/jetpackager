@@ -66,7 +66,7 @@ Everything is contained within the <root> section:
 <folder "$(Root)" 0 0 4
 >end //folder
 
-Foders are detailed:
+Folders are detailed:
   <folder "${name}" ${permissions}
   >end //folder
   
