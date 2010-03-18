@@ -65,6 +65,7 @@ public class PropertyUtils {
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
 			if(line.contains("${")) {
+				String originalLine = line;
 				for(Entry<String, String> prop : props.entrySet()) {
 					String propertyKey = prop.getKey();
 					String propertyValue = prop.getValue();
@@ -73,7 +74,7 @@ public class PropertyUtils {
 					line = line.replace(subKey, propertyValue);
 					lines[i] = line;
 				}
-				assert(!lines[i].equals(line)) : "Failed to change line: " + line;
+				assert(!lines[i].equals(originalLine)) : "Failed to change line: " + line;
 			}
 		}
 	}
