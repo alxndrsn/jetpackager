@@ -250,7 +250,7 @@ class PackContentBuilder {
 			append(">end //folder");
 		} else if(f.isFile()) {
 			append("<file");
-			appendAttribute("basic_info", "\"" + f.getName() + "\" \"" + f.getAbsolutePath() + "\"");
+			appendAttribute("basic_info", "\"" + f.getName() + "\" \"" + f.getAbsolutePath() + "\" 0 false \"" + f.getAbsolutePath() + "\"");
 			appendAttribute("flags", "0 0 4");
 			appendAttribute("cachedLastModified", TIMESTAMP + "L");
 			appendAttribute("attributes", "0");
