@@ -6,6 +6,7 @@ package net.frontlinesms.build.jet.compile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.frontlinesms.build.jet.FileUtils;
@@ -32,12 +33,12 @@ public class JetCompiler {
 	private String compileExecutable;
 	
 //> CONSTRUCTORS
-	private JetCompiler(File workingDirectory) {
+	public JetCompiler(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
 	}
 	
 //> INSTANCE METHODS
-	private void doCompile(JetCompileProfile compileProfile) throws IOException {
+	public void doCompile(JetCompileProfile compileProfile) throws IOException {
 		assert(configured) : "This packager is not configured yet.";
 		
 		// Load the template.prj file from the classpath into memory
@@ -85,13 +86,20 @@ public class JetCompiler {
 	
 	/** Configures the {@link JetCompiler} itself.  This is basically environment
 	 * variables, working directory etc. */
-	private void configure(Map<String, String> props) throws FileNotFoundException {
+	private void configure(Map<String, String> props) {
 		assert(!this.configured) : "This should not be configured more than once.";
 		
 		this.compileExecutable = props.get(CONF_PROP_COMPILE_EXECUTABLE);
 		assert(this.compileExecutable!=null) : "No compile executable was specified.  Should be set with key: " + CONF_PROP_COMPILE_EXECUTABLE;
 		
 		this.configured = true;
+	}
+	
+	/** Call {@link #configure(Map)} with default settings. */
+	public void configureDefaults() {
+		Map<String, String> defaultConfiguration = new HashMap<String, String>();
+		defaultConfiguration.put(CONF_PROP_COMPILE_EXECUTABLE, "");
+		configure(defaultConfiguration);
 	}
 
 	public static void main(String[] args) throws IOException {

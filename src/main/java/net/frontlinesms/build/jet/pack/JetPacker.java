@@ -6,6 +6,7 @@ package net.frontlinesms.build.jet.pack;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.frontlinesms.build.jet.FileUtils;
@@ -29,7 +30,7 @@ public class JetPacker {
 	private String packExecutable;
 	
 //> CONSTRUCTORS
-	private JetPacker(File workingDirectory) {
+	public JetPacker(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
 	}
 	
@@ -49,13 +50,20 @@ public class JetPacker {
 	/** Configures the {@link JetPacker} itself.  This is basically environment
 	 * variables, working directory etc. 
 	 * @throws FileNotFoundException */
-	public void configure(Map<String, String> props) throws FileNotFoundException {
+	public void configure(Map<String, String> props) {
 		assert(!configured) : "Can only configure once.";
 		
 		this.packExecutable = props.get(CONF_PROP_PACK_EXECUTABLE);
 		assert(this.packExecutable!=null) : "No package executable was specified.  Should be set with key: " + CONF_PROP_PACK_EXECUTABLE;
 		
 		this.configured = true;
+	}
+
+	/** Call {@link #configure(Map)} with default settings. */
+	public void configureDefaults() {
+		Map<String, String> defaultConfiguration = new HashMap<String, String>();
+		defaultConfiguration.put(CONF_PROP_PACK_EXECUTABLE, "");
+		configure(defaultConfiguration);
 	}
 	
 //> INSTANCE HELPER METHODS
