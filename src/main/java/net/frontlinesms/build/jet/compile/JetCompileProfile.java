@@ -41,7 +41,8 @@ public class JetCompileProfile {
 	
 	public JetCompileProfile(File rootDirectory,
 			String jpnPath, String javaMainClass, String outputName,
-			String splashImagePath, String versionInfoCompanyName,
+			String splashImagePath, String iconPath, 
+			String versionInfoCompanyName,
 			String versionInfoFileDescription, String versionInfoCopyrightYear,
 			String versionInfoCopyrightOwner, String versionInfoProductName, String versionInfoNumber) {
 		this.compileRootDirectory = rootDirectory;
@@ -50,6 +51,7 @@ public class JetCompileProfile {
 		this.javaMainClass = javaMainClass.replace('.', '/');
 		this.outputName = outputName;
 		this.splashImagePath = splashImagePath;
+		this.iconPath = iconPath;
 		this.versionInfoCompanyName = versionInfoCompanyName;
 		this.versionInfoFileDescription = versionInfoFileDescription;
 		this.versionInfoCopyrightYear = versionInfoCopyrightYear;
@@ -111,15 +113,13 @@ public class JetCompileProfile {
 				props.remove(PROP_JAVA_MAIN_CLASS),
 				props.remove(PROP_OUTPUT_NAME),
 				props.remove(PROP_SPLASH_IMAGE_PATH),
+				props.remove(PROP_ICON_PATH),
 				props.remove(PROP_VERSION_INFO_COMPANY_NAME),
 				props.remove(PROP_VERSION_INFO_FILE_DESCRIPTION),
 				props.remove(PROP_VERSION_INFO_COPYRIGHT_YEAR),
 				props.remove(PROP_VERSION_INFO_COPYRIGHT_OWNER),
 				props.remove(PROP_VERSION_INFO_PRODUCT_NAME),
 				props.remove(PROP_VERSION_INFO_NUMBER));
-		
-		String iconPath = props.remove(PROP_ICON_PATH);
-		if(iconPath != null) compileProfile.iconPath = iconPath;
 		
 		// Check all properties used
 		assert(props.size() == 0) : "There are " + props.size() + " unused properties.";
