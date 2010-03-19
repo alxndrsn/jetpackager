@@ -64,7 +64,7 @@ public class JetCompiler {
 	}
 	
 	private File getPrjFile() {
-		return new File(this.workingDirectory, "output.prj");
+		return new File(this.workingDirectory, "output.prj").getAbsoluteFile();
 	}
 	
 	private String getCompileCommand() {

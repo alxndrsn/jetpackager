@@ -91,7 +91,7 @@ public class JetCompileProfile {
 			// The path is absolute, so keep it that way
 			return path;
 		} else {
-			return new File(new File(this.compileRootDirectory, "resources"), path).getAbsolutePath();
+			return new File(this.compileRootDirectory, path).getAbsolutePath();
 		}
 	}
 	
