@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.frontlinesms.build.jet.compile.JetCompiler;
-
 public class FileUtils {
 
 	public static final String[] readFileFromClasspath(Class<?> callingClass, String filename, String encoding) throws IOException {

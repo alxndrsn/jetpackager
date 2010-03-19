@@ -39,7 +39,7 @@ public class JetCompileProfile {
 	/** This is the directory that all paths in the package configuration are relative to. */
 	private final File compileRootDirectory;
 	
-	private JetCompileProfile(File rootDirectory,
+	public JetCompileProfile(File rootDirectory,
 			String jpnPath, String javaMainClass, String outputName,
 			String splashImagePath, String versionInfoCompanyName,
 			String versionInfoFileDescription, String versionInfoCopyrightYear,

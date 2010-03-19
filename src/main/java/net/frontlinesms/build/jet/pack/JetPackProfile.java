@@ -71,7 +71,7 @@ public class JetPackProfile {
 	private final String programFilesHome;
 	
 //> CONSTRUCTORS
-	private JetPackProfile(File workingDirectory,
+	public JetPackProfile(File workingDirectory,
 				String productName,
 				String productVersion, String productVersionStandardised,
 				String productDescription, String productVendor,
