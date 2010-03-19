@@ -35,10 +35,10 @@ public class JetPacker {
 	}
 	
 //> INSTANCE METHODS
-	public void doPack(JetPackProfile packProfile) throws IOException {
+	public int doPack(JetPackProfile packProfile) throws IOException {
 		assert(this.configured) : "You cannot pack until the packer has been configured.";
 		generateJpnFile(packProfile);
-		executeXPack();
+		return executeXPack();
 	}
 
 	/** Calls {@link #configure(Map)} with the contents of the supplied config file. */

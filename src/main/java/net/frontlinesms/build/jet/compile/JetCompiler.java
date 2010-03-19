@@ -38,7 +38,7 @@ public class JetCompiler {
 	}
 	
 //> INSTANCE METHODS
-	public void doCompile(JetCompileProfile compileProfile) throws IOException {
+	public int doCompile(JetCompileProfile compileProfile) throws IOException {
 		assert(configured) : "This packager is not configured yet.";
 		
 		// Load the template.prj file from the classpath into memory
@@ -60,7 +60,7 @@ public class JetCompiler {
 		ProcessStreamPrinter printer = ProcessStreamPrinter.createStandardPrinter("compile", buildProcess);
 		int buildStatus = printer.startBlocking();
 		
-		System.exit(buildStatus);
+		return buildStatus;
 	}
 	
 	private File getPrjFile() {
