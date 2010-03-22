@@ -77,8 +77,6 @@ public class JetPacker {
 		PropertyUtils.subProperties(dotJpnLines, packProfile.getSubstitutionProperties());
 		
 		FileUtils.writeFile(getJpnFile(), JPN_FILE_ENCODING, dotJpnLines);
-		
-		// TODO we should actually generate a JPN which is relevant to the project!
 	}
 	
 	private int executeXPack() throws IOException {
@@ -99,7 +97,7 @@ public class JetPacker {
 	}
 
 	private File getJpnFile() {
-		return new File(this.workingDirectory, "output.jpn");
+		return new File(this.workingDirectory, "output.jpn").getAbsoluteFile();
 	}
 	
 //> STATIC HELPER METHODS
