@@ -44,6 +44,8 @@ public class JetPackProfile {
 	private static final String PROP_PRODUCT_VENDOR = "productVendor";
 	/** Property key: TODO document from template.notes.txt */
 	private static final String PROP_WORKING_DIRECTORY = "workingDirectory";
+	/** Property key: LZMA compression level, either 0, 1 or 2 */
+	private static final String PROP_COMPRESSION_LEVEL = "compression";
 
 //> INSTANCE PROPERTIES
 	/** This is the directory that all paths in the package configuration are relative to. */
@@ -69,6 +71,8 @@ public class JetPackProfile {
 	private final String startMenuProgramFolderRoot;
 	/** Property: TODO document from template.notes.txt */
 	private final String programFilesHome;
+	/** Property: TODO document from template.notes.txt */
+	private final JetPackCompression compressionLevel;
 	
 //> CONSTRUCTORS
 	public JetPackProfile(File workingDirectory,
@@ -76,7 +80,7 @@ public class JetPackProfile {
 				String productVersion, String productVersionStandardised,
 				String productDescription, String productVendor,
 				String executableName, String startMenuProgramFolderRoot,
-				String programFilesHome) {
+				String programFilesHome, JetPackCompression compressionLevel) {
 		this.workingDirectory = workingDirectory;
 		assert(this.workingDirectory.exists()) : "The working directory does not exist: " + this.workingDirectory.getAbsolutePath();
 		this.jarDirectory = new File(workingDirectory, "classpath");
@@ -92,6 +96,7 @@ public class JetPackProfile {
 		this.executableName = executableName;
 		this.startMenuProgramFolderRoot = startMenuProgramFolderRoot;
 		this.programFilesHome = programFilesHome;
+		this.compressionLevel = compressionLevel;
 	}
 	
 //> INSTANCE METHODS
@@ -117,6 +122,7 @@ public class JetPackProfile {
 		props.put(PROP_EXECUTABLE_NAME, this.executableName);
 		props.put(PROP_START_MENU_PROGRAM_FOLDER_ROOT, this.startMenuProgramFolderRoot);
 		props.put(PROP_PROGRAM_FILES_HOME, this.programFilesHome);
+		props.put(PROP_COMPRESSION_LEVEL, Integer.toString(this.compressionLevel.getLevel()));
 
 		return props;
 	}
@@ -201,7 +207,8 @@ public class JetPackProfile {
 				props.remove(PROP_PRODUCT_VENDOR),
 				props.remove(PROP_EXECUTABLE_NAME),
 				props.remove(PROP_START_MENU_PROGRAM_FOLDER_ROOT),
-				props.remove(PROP_PROGRAM_FILES_HOME)
+				props.remove(PROP_PROGRAM_FILES_HOME),
+				JetPackCompression.getFromLevel(props.remove(PROP_COMPRESSION_LEVEL))
 				);
 
 		// Check all properties used
