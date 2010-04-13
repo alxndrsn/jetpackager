@@ -3,7 +3,7 @@
 	<groupId>net.frontlinesms.build</groupId>
 	<artifactId>jetpackager</artifactId>
 	<name>JetPackager</name>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>0.0.5</version>
 	<description>Build Excelsior JET packages from Java</description>
 	
 	<scm>
