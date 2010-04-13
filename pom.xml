@@ -7,7 +7,7 @@
 	<description>Build Excelsior JET packages from Java</description>
 	
 	<scm>
-		<connection>scm:git:git://git@github.com/alexandergeorge/jetpackager-maven-plugin.git</connection>
+		<connection>scm:git:git://git@github.com:alexandergeorge/jetpackager-maven-plugin.git</connection>
 	</scm>
 	
 	<distributionManagement>
