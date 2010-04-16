@@ -35,6 +35,17 @@ public class JetPacker {
 	}
 	
 //> INSTANCE METHODS
+	/** @return <code>true</code> if {@link JetPacker} is supported by this runtime; <code>false</code> otherwise. */
+	public boolean isSupported() {
+		try {
+			Runtime.getRuntime().exec(getPackageCommand());
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+	
 	public int doPack(JetPackProfile packProfile) throws IOException {
 		assert(this.configured) : "You cannot pack until the packer has been configured.";
 		generateJpnFile(packProfile);
@@ -80,7 +91,8 @@ public class JetPacker {
 	}
 	
 	private int executeXPack() throws IOException {
-		Process packageProcess = Runtime.getRuntime().exec(getPackageCommand(), null, this.workingDirectory);
+		Process packageProcess = Runtime.getRuntime().exec(new String[]{getPackageCommand(), getJpnFile().getAbsolutePath()},
+				null, this.workingDirectory);
 		ProcessStreamPrinter psp = ProcessStreamPrinter.createStandardPrinter("package", packageProcess);
 		return psp.startBlocking();
 	}
@@ -88,12 +100,11 @@ public class JetPacker {
 	private String getPackageCommand() {
 		String executable;
 		if(this.packExecutable != null && this.packExecutable.length() > 0) {
-			executable = this.packExecutable + "/jc";
+			executable = this.packExecutable + "/xpack";
 		} else {
 			executable = "xpack";
 		}
-		return executable 
-			+ " " + getJpnFile();
+		return executable;
 	}
 
 	private File getJpnFile() {

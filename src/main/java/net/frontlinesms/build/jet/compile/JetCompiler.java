@@ -12,6 +12,7 @@ import java.util.Map;
 import net.frontlinesms.build.jet.FileUtils;
 import net.frontlinesms.build.jet.ProcessStreamPrinter;
 import net.frontlinesms.build.jet.PropertyUtils;
+import net.frontlinesms.build.jet.pack.JetPacker;
 
 /**
  * Compiles a jet package from java.
@@ -38,6 +39,17 @@ public class JetCompiler {
 	}
 	
 //> INSTANCE METHODS
+	/** @return <code>true</code> if {@link JetPacker} is supported by this runtime; <code>false</code> otherwise. */
+	public boolean isSupported() {
+		try {
+			Runtime.getRuntime().exec(getCompileCommand());
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+	
 	public int doCompile(JetCompileProfile compileProfile) throws IOException {
 		assert(configured) : "This packager is not configured yet.";
 		
@@ -56,7 +68,8 @@ public class JetCompiler {
 		// TODO Copy code to the classpath directory.  Currently this is manually copied in
 		
 		// Execute the build
-		Process buildProcess = Runtime.getRuntime().exec(getCompileCommand(), null, this.workingDirectory);
+		Process buildProcess = Runtime.getRuntime().exec(new String[]{getCompileCommand(), "=p", getPrjFile().getAbsolutePath()},
+				null, this.workingDirectory);
 		ProcessStreamPrinter printer = ProcessStreamPrinter.createStandardPrinter("compile", buildProcess);
 		int buildStatus = printer.startBlocking();
 		
@@ -74,8 +87,7 @@ public class JetCompiler {
 		} else {
 			executable = "jc";
 		}
-		return executable
-				+ " =p " + getPrjFile();
+		return executable;
 	}
 
 	/** Calls {@link #configure(Map)} with the contents of the supplied config file. */
@@ -102,6 +114,7 @@ public class JetCompiler {
 		configure(defaultConfiguration);
 	}
 
+//> STATIC METHODS
 	public static void main(String[] args) throws IOException {
 		assert(args.length > 3) : "Not enough args.";
 		String workingDirectoryRoot = args[0];
