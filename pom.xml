@@ -7,20 +7,15 @@
 	<description>Build Excelsior JET packages from Java</description>
 	
 	<scm>
-		<connection>scm:git://github.com/alexandergeorge/jetpackager.git</connection>
-		<developerConnection>scm:git:git@github.com:alexandergeorge/jetpackager.git</developerConnection>
+		<connection>scm:git://github.com/frontlinesms/jetpackager.git</connection>
+		<developerConnection>scm:git:git@github.com:frontlinesms/jetpackager.git</developerConnection>
 	</scm>
 	
 	<distributionManagement>
-		<snapshotRepository>
-			<id>cleone.net.repo</id>
-			<name>Temporary FrontlineSMS repository on cleone.net</name>
-			<url>ftp://m2repo.cleone.net</url>
-		</snapshotRepository>
 		<repository>
-			<id>cleone.net.repo</id>
-			<name>Temporary FrontlineSMS repository on cleone.net</name>
-			<url>ftp://m2repo.cleone.net</url>
+			<id>frontlinesms.repo</id>
+			<name>FrontlineSMS Maven repository</name>
+			<url>ftp://dev.frontlinesms.com</url>
 		</repository>
 	</distributionManagement>
 	
